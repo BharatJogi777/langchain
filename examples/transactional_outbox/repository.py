@@ -39,6 +39,16 @@ class OutboxRepository:
                           max_attempts: int = 8) -> list[dict[str, Any]]:
         async with self.pool.connection() as conn:
             async with conn.transaction():
+                # A worker may crash on its final permitted attempt. Once its
+                # lease expires, quarantine it instead of leaving it stuck.
+                await conn.execute(
+                    """UPDATE approval_outbox
+                       SET status='dead', last_error='retry_budget_exhausted',
+                           locked_by=NULL, locked_until=NULL, claim_token=NULL
+                       WHERE status='processing' AND locked_until < now()
+                         AND attempts >= %s""",
+                    (max_attempts,),
+                )
                 cur = await conn.execute(
                     CLAIM_SQL,
                     (max_attempts, batch_size, worker_id, claim_token, lease_seconds),
