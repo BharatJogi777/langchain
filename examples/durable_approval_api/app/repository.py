@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from datetime import datetime, timezone
 from typing import Any
 from uuid import UUID
 
@@ -47,7 +48,10 @@ class ApprovalRepository:
 
     async def setup(self) -> None:
         async with self.pool.connection() as conn:
-            await conn.execute(SCHEMA_SQL)
+            # Execute DDL individually to avoid multi-command prepared-statement issues.
+            for statement in SCHEMA_SQL.split(';'):
+                if statement.strip():
+                    await conn.execute(statement)
             await conn.commit()
 
     async def create(
@@ -119,11 +123,11 @@ class ApprovalRepository:
                     return None, "not_found"
                 if row["requester_id"] == approver_id:
                     return None, "self_approval"
+                if row["environment"] == "production" and approver_role != "incident_commander":
+                    return None, "production_role_required"
                 if row["status"] == "expired":
                     return None, "expired"
-                if row["expires_at"] <= __import__("datetime").datetime.now(
-                    __import__("datetime").timezone.utc
-                ):
+                if row["expires_at"] <= datetime.now(timezone.utc):
                     await conn.execute(
                         "UPDATE approval_requests SET status='expired', updated_at=now() WHERE request_id=%s",
                         (request_id,),
