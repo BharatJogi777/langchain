@@ -95,7 +95,7 @@ def create_app(
         request.state.correlation_id = correlation_id
         started = time.perf_counter()
         status_code = 500
-        route_label = request.url.path
+        route_label = "unmatched"
         try:
             with correlation_scope(correlation_id):
                 response = await call_next(request)
