@@ -1,0 +1,1 @@
+"""MCP observability example package."""
