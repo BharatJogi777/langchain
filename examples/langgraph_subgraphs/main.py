@@ -117,9 +117,8 @@ def build_graph():
     builder.add_edge(START, "metrics_agent")
     builder.add_edge(START, "infra_agent")
 
-    builder.add_edge("logs_agent", "synthesize")
-    builder.add_edge("metrics_agent", "synthesize")
-    builder.add_edge("infra_agent", "synthesize")
+    # A list of source nodes creates a join: synthesis waits for all specialists.
+    builder.add_edge(["logs_agent", "metrics_agent", "infra_agent"], "synthesize")
     builder.add_edge("synthesize", END)
     return builder.compile()
 
