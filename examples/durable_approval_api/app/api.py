@@ -29,18 +29,6 @@ async def demo_principal(
         raise HTTPException(status_code=401, detail="Invalid demo identity")
 
 
-async def mock_executor(**proposal):
-    """Safe simulation; no external infrastructure is contacted."""
-    return {
-        "executed": True,
-        "mode": "simulation",
-        "action": proposal["action"],
-        "service": proposal["service"],
-        "environment": proposal["environment"],
-        "change_reference": proposal["change_reference"],
-    }
-
-
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     database_url = os.environ["DATABASE_URL"]
@@ -61,9 +49,12 @@ async def lifespan(app: FastAPI):
     checkpointer = AsyncPostgresSaver(pool)
     await checkpointer.setup()
 
+    from app.mcp_executor import build_mcp_executor
+    action_executor = await build_mcp_executor()
+
     app.state.pool = pool
     app.state.repository = repository
-    app.state.graph = build_graph(mock_executor, checkpointer)
+    app.state.graph = build_graph(action_executor, checkpointer)
     yield
     await pool.close()
 
