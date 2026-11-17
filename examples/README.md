@@ -1,0 +1,3 @@
+# Examples
+
+Build examples in this order as you progress: chat model and message inspection; prompt chain; RunnableLambda/Parallel/Passthrough/Branch; structured output; typed tools; bounded agent; checkpointer; document ingestion; chunking; embeddings; vector retrieval; RAG; MCP server/client. Keep examples small and runnable in the virtual environment from docs/01. Do not call snippets production-ready until configuration, authorization, validation, timeouts, logging, tests, and error handling are added.

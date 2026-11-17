@@ -1,0 +1,19 @@
+# Learning dependencies; verify compatibility and lock exact versions for real projects.
+langchain
+langchain-core
+langchain-ollama
+langchain-text-splitters
+langchain-community
+langchain-postgres
+psycopg[binary,pool]
+mcp[cli]
+langchain-mcp-adapters
+fastapi
+uvicorn[standard]
+pydantic
+pydantic-settings
+pytest
+pytest-asyncio
+httpx
+ruff
+mypy
