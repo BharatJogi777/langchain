@@ -147,6 +147,8 @@ ollama pull llama3.2:3b
 uvicorn main:app --app-dir examples/fastapi_agent_api --host 127.0.0.1 --port 8000
 ~~~
 
+**Update after Lesson 34:** the example now requires JWT authentication and service authorization. Set the demo environment variables and obtain a bearer token using [Lesson 34](34-production-agent-api-security.md) before submitting an investigation. The original unauthenticated curl below illustrates the API payload only; add an `Authorization: Bearer YOUR_ACCESS_TOKEN` header when running the current code.
+
 Submit an investigation:
 
 ~~~bash
