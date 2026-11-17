@@ -2,6 +2,11 @@
 from __future__ import annotations
 
 import os
+import sys
+from pathlib import Path
+
+# Make the example package importable when this file is launched as a stdio child process.
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from mcp.server.fastmcp import FastMCP
 
