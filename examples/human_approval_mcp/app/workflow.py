@@ -109,21 +109,21 @@ def thread_config(request_id: str) -> dict[str, Any]:
     return {"configurable": {"thread_id": request_id}}
 
 
-def start_approval(graph, proposal: ActionProposal):
-    return graph.invoke(
+async def start_approval(graph, proposal: ActionProposal):
+    return await graph.ainvoke(
         {"proposal": proposal.model_dump(mode="json")},
         config=thread_config(proposal.request_id),
     )
 
 
-def resume_approval(
+async def resume_approval(
     graph,
     *,
     request_id: str,
     decision: ApprovalDecision,
 ):
     """Resume with a decision constructed by a trusted authenticated API layer."""
-    return graph.invoke(
+    return await graph.ainvoke(
         Command(resume=decision.model_dump(mode="json")),
         config=thread_config(request_id),
     )
