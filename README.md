@@ -37,7 +37,7 @@ A structured, hands-on curriculum for learning modern LangChain from foundations
 | 24 | [LangGraph state, reducers, and checkpointing](docs/24-langgraph-state-reducers-checkpointing.md) |
 | 25 | [LangGraph conditional routing and loops](docs/25-langgraph-conditional-routing-loops.md) |
 | 26 | [LangGraph dynamic fan-out with Send and map-reduce](docs/26-langgraph-dynamic-fanout-send-map-reduce.md) |
-| 27 | [LangGraph subgraphs and multi-agent architecture](docs/27-langgraph-subgraphs-multi-agent-architecture.md) |\n| 28 | [LangGraph supervisor pattern and agent handoffs](docs/28-langgraph-supervisor-agent-handoffs.md) |
+| 27 | [LangGraph subgraphs and multi-agent architecture](docs/27-langgraph-subgraphs-multi-agent-architecture.md) |\n| 28 | [LangGraph supervisor pattern and agent handoffs](docs/28-langgraph-supervisor-agent-handoffs.md) |\n| 29 | [LLM-powered supervisor with structured routing](docs/29-llm-powered-supervisor-structured-routing.md) |
 | 16 | Multi-agent patterns and LangGraph orchestration |
 | 17 | FastAPI integration and application architecture |
 | 18 | Testing, evaluation, observability, and tracing |
@@ -47,7 +47,7 @@ A structured, hands-on curriculum for learning modern LangChain from foundations
 ## Repository structure
 
 - `docs/`: sequential lessons and reference material.
-- `examples/`: small runnable examples, including [multiple MCP servers](examples/multi_mcp_servers/), [MCP resilience](examples/mcp_resilience/), and [LangGraph workflows](examples/langgraph_workflows/), and [LangGraph state/checkpointing](examples/langgraph_state/), and [LangGraph routing/loops](examples/langgraph_routing/), and [LangGraph Send/map-reduce](examples/langgraph_send/), and [LangGraph subgraphs](examples/langgraph_subgraphs/), and [LangGraph supervisor and handoffs](examples/langgraph_supervisor/).
+- `examples/`: small runnable examples, including [multiple MCP servers](examples/multi_mcp_servers/), [MCP resilience](examples/mcp_resilience/), and [LangGraph workflows](examples/langgraph_workflows/), and [LangGraph state/checkpointing](examples/langgraph_state/), and [LangGraph routing/loops](examples/langgraph_routing/), and [LangGraph Send/map-reduce](examples/langgraph_send/), and [LangGraph subgraphs](examples/langgraph_subgraphs/), and [LangGraph supervisor and handoffs](examples/langgraph_supervisor/), and [LLM-powered supervisor routing](examples/langgraph_llm_supervisor/).
 - `projects/`: end-to-end capstone and architecture.
 - `checklists/`: review gates for production readiness.
 
