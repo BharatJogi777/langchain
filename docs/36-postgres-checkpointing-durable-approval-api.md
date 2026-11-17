@@ -152,7 +152,7 @@ When the reviewer submits a decision:
 9. Let the graph continue to the execution node or rejection path.
 10. Record the workflow result and audit event.
 
-The example uses a row-level `SELECT ... FOR UPDATE` and a state transition to `decision_recorded` so concurrent reviewers cannot both win the same pending decision.
+The example uses a row-level `SELECT ... FOR UPDATE` and a state transition to `decision_recorded` so concurrent reviewers cannot both win the same pending decision. After approval, the graph invokes a separate stdio MCP server; its restart/rollback tools are simulation-only and use a SQLite idempotency ledger.
 
 ## 9. Restart experiment
 
@@ -299,7 +299,7 @@ The code is a runnable learning skeleton. Add tests before adapting it to produc
 9. Worker retries after an ambiguous MCP timeout without duplicating the operation.
 10. User A cannot read or resume User B's workflow.
 
-The local executor is simulation-only. No real infrastructure is changed.
+The MCP operations server is simulation-only. It records operations in a local SQLite idempotency ledger; no real infrastructure is changed.
 
 ## 16. Knowledge check
 
