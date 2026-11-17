@@ -172,19 +172,19 @@ class ApprovalRepository:
 
     async def mark_result(self, request_id: UUID, status: str, actor_id: str, result: dict):
         async with self.pool.connection() as conn:
-            await conn.execute(
-                "UPDATE approval_requests SET status=%s, updated_at=now() WHERE request_id=%s",
-                (status, request_id),
-            )
-            await conn.execute(
-                """
-                INSERT INTO approval_audit_events
-                (request_id, actor_id, event_type, event_data)
-                VALUES (%s, %s, %s, %s::jsonb)
-                """,
-                (request_id, actor_id, f"workflow_{status}", json.dumps(result, default=str)),
-            )
-            await conn.commit()
+            async with conn.transaction():
+                await conn.execute(
+                    "UPDATE approval_requests SET status=%s, updated_at=now() WHERE request_id=%s",
+                    (status, request_id),
+                )
+                await conn.execute(
+                    """
+                    INSERT INTO approval_audit_events
+                    (request_id, actor_id, event_type, event_data)
+                    VALUES (%s, %s, %s, %s::jsonb)
+                    """,
+                    (request_id, actor_id, f"workflow_{status}", json.dumps(result, default=str)),
+                )
 
     async def audit(self, request_id: UUID):
         async with self.pool.connection() as conn:
