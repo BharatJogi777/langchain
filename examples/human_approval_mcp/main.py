@@ -24,7 +24,7 @@ async def main():
         change_reference="CHG-2026-1042",
     )
 
-    result = start_approval(graph, proposal)
+    result = await start_approval(graph, proposal)
     interrupts = result.get("__interrupt__", [])
     if not interrupts:
         print(json.dumps(result, indent=2, default=str))
@@ -49,7 +49,7 @@ async def main():
         approver_role=approver_role,
         comment=comment,
     )
-    final = resume_approval(
+    final = await resume_approval(
         graph,
         request_id=proposal.request_id,
         decision=approval,
