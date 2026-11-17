@@ -136,7 +136,7 @@ Read `main.py`.
 
 The program:
 1. Starts the same three stdio MCP servers from Lesson 30.
-2. Discovers each server's tools independently.
+2. Discovers each server's tools independently. A server-specific discovery failure is captured and represented as unavailable evidence; it does not prevent the other specialists from running. Tool-catalog configuration mismatches still fail fast.
 3. Creates a specialist agent with only its own tools.
 4. Wraps each specialist's `ainvoke` call in its own `ResilientExecutor`.
 5. Runs specialists independently and produces a full or partial report.
