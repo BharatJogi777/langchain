@@ -13,6 +13,7 @@ async def investigate(
     *,
     incident: str,
     service: str,
+    task: str = "Collect read-only evidence for this incident",
     specialists: dict[str, Specialist],
     executors: dict[str, ResilientExecutor],
 ) -> dict:
@@ -23,7 +24,7 @@ async def investigate(
     async def run_one(name: str, specialist: Specialist) -> tuple[str, str, str | None]:
         try:
             evidence = await executors[name].run(
-                lambda: specialist(incident, service, incident)
+                lambda: specialist(incident, service, task)
             )
             return name, str(evidence)[:4000], None
         except Exception as exc:
