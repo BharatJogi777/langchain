@@ -96,7 +96,7 @@ Passwords are stored as Argon2id hashes using `pwdlib[argon2]`. Never store plai
 
 ### Important production distinction
 
-The `/token` username/password endpoint is a local learning mechanism that follows FastAPI's documented OAuth2 bearer/JWT tutorial. For a real browser, mobile, or enterprise system, prefer an established identity provider using OpenID Connect Authorization Code with PKCE. For machine-to-machine access, use an appropriate client-credentials flow. Do not build your own identity provider unless that is genuinely your product requirement.
+The `/token` username/password endpoint is **demo-only**. It demonstrates password hashing and bearer JWT validation, but it implements the OAuth 2.0 Resource Owner Password Credentials grant. The current OAuth 2.0 Security Best Current Practice (RFC 9700, section 2.4) says this grant MUST NOT be used. Do not deploy this login flow. For browser/mobile applications, use an established identity provider with OpenID Connect Authorization Code + PKCE. For machine-to-machine access, use an appropriate client-credentials flow. Do not build your own identity provider unless that is genuinely your product requirement.
 
 References: [FastAPI OAuth2 + JWT](https://fastapi.tiangolo.com/tutorial/security/oauth2-jwt/), [FastAPI security first steps](https://fastapi.tiangolo.com/tutorial/security/first-steps/).
 
@@ -302,6 +302,7 @@ You can explain the identity-to-tool authorization path, run the secured API, de
 
 - [FastAPI OAuth2 and JWT](https://fastapi.tiangolo.com/tutorial/security/oauth2-jwt/)
 - [FastAPI security first steps](https://fastapi.tiangolo.com/tutorial/security/first-steps/)
+- [RFC 9700 — OAuth 2.0 Security Best Current Practice](https://www.rfc-editor.org/rfc/rfc9700.html)
 - [OWASP API Security Top 10](https://devguide.owasp.org/en/07-training-education/07-api-top-ten/)
 - [OWASP LLM Top 10](https://owasp.org/www-project-top-10-for-large-language-model-applications)
 - [OWASP prompt injection](https://genai.owasp.org/glossary/prompt-injection/)
