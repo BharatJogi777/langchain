@@ -1,1 +1,4 @@
 pytest
+pytest-asyncio
+psycopg[binary,pool]>=3.2,<4
+langgraph>=1.0,<2
