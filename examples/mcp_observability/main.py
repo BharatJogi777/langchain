@@ -95,7 +95,7 @@ async def main() -> None:
                     incident: str, service: str, task: str, *, _agent=agent
                 ):
                     prompt = (
-                        f"Service: {service}\\nIncident: {incident}\\nTask: {task}\\n"
+                        f"Service: {service}\nIncident: {incident}\nTask: {task}\n"
                         "Collect concise, read-only evidence. State uncertainty explicitly."
                     )
                     result = await _agent.ainvoke(
@@ -126,7 +126,7 @@ async def main() -> None:
             )
             logger.info("investigation report ready")
             print(result["report"])
-            print(f"\\nCorrelation ID: {correlation_id}")
+            print(f"\nCorrelation ID: {correlation_id}")
     finally:
         tracer_provider.shutdown()
         meter_provider.shutdown()
