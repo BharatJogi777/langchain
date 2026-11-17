@@ -118,3 +118,14 @@ def test_rate_limit_returns_429():
     assert first.status_code == 200
     assert second.status_code == 429
     assert "Retry-After" in second.headers
+
+def test_tampered_token_is_rejected():
+    with TestClient(build_secure_app()) as client:
+        token = login(client, "investigator", "investigator-test-password").json()["access_token"]
+        tampered = token[:-1] + ("a" if token[-1] != "a" else "b")
+        response = client.post(
+            "/v1/investigations",
+            headers={"Authorization": f"Bearer {tampered}"},
+            json=payload(),
+        )
+    assert response.status_code == 401
