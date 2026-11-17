@@ -23,7 +23,7 @@ export DATABASE_URL='postgresql://langgraph:local-dev-only-change-me@localhost:5
 uvicorn app.api:app --app-dir examples/durable_approval_api --host 127.0.0.1 --port 8010
 ~~~
 
-The API creates the application approval/audit tables and LangGraph checkpoint tables on startup.
+The API creates the application approval/audit tables and LangGraph checkpoint tables on startup. It launches a separate stdio MCP server for the approved operation; both available tools are simulations only.
 
 ## Demo identity warning
 
