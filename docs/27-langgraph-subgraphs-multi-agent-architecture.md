@@ -3,163 +3,242 @@
 ## Learning objectives
 
 By the end of this lesson, you should be able to:
-1. Explain what a LangGraph subgraph is.
+
+1. Explain what a LangGraph subgraph is and why it is useful.
 2. Build and compile a specialist graph independently.
-3. Connect child graphs to a parent graph.
-4. Choose between direct subgraph nodes and wrapper-node invocation.
-5. Run specialist workflows in parallel and aggregate their findings.
-6. Decide which state should be shared and which should remain private.
+3. Choose between adding a compiled subgraph as a node and invoking it inside a wrapper node.
+4. Separate specialist-private state from parent-orchestrator state.
+5. Run independent specialists in parallel and aggregate results safely.
+6. Explain persistence choices and production boundaries for nested workflows.
 
-## 1. What is a subgraph?
+## 1. Why subgraphs?
 
-A subgraph is a graph used as a node inside another graph. The outer graph is the **parent graph**; the nested graph is the **child graph**.
+A subgraph is a compiled graph used as a node inside another graph. The outer graph is the **parent**; the nested graph is the **child**.
 
-A subgraph is useful when a workflow has a meaningful independent responsibility. Examples:
-- a log investigation workflow;
-- a metrics analysis workflow;
-- an infrastructure inspection workflow;
-- a document retrieval workflow;
-- a policy or compliance review workflow.
+Subgraphs are useful for:
+- multi-agent and specialist workflows;
+- reusable business processes;
+- independent development by teams;
+- hiding internal state behind a stable input/output contract.
 
-LangGraph documents subgraphs as a composition mechanism for multi-agent systems, reusable workflows, and independently developed components. See the official [Subgraphs guide](https://docs.langchain.com/oss/python/langgraph/use-subgraphs). [Source: official docs]
+Official documentation describes both communication patterns and persistence choices: [LangGraph Subgraphs](https://docs.langchain.com/oss/python/langgraph/use-subgraphs). <Cite>Official LangGraph documentation</Cite>
 
-## 2. Parent graph and specialist subgraphs
+A single giant graph is often hard to maintain. If logs, metrics, infrastructure, and report generation all share one state schema and one collection of nodes, a small change in one area can affect every other area.
 
-Our DevOps investigation example has three specialists:
+Instead, package each responsibility behind a boundary.
+
+## 2. Target architecture: DevOps investigation
 
 ~~~text
-                     Parent graph
-                          |
-            +-------------+-------------+
-            |             |             |
-         Logs agent    Metrics agent   Infra agent
-         subgraph       subgraph       subgraph
-            |             |             |
-         findings      findings      findings
-            +-------------+-------------+
-                          |
-                    Synthesis node
-                          |
-                    Incident report
+                         Parent graph
+                              |
+              +---------------+---------------+
+              |               |               |
+          Logs graph      Metrics graph    Infra graph
+              |               |               |
+          log finding     metric finding   infra finding
+              +---------------+---------------+
+                              |
+                         Synthesis
+                              |
+                       Incident report
 ~~~
 
-Each specialist owns its own small workflow. The parent owns orchestration and final aggregation.
+The parent graph coordinates. Each child graph performs a focused investigation.
 
-Important: these are deterministic workflow specialists with mock evidence, not autonomous LLM agents. We will add model reasoning and MCP calls in later integration exercises. A graph boundary alone does not make a component an AI agent.
+Important distinction: a subgraph is a workflow boundary, not automatically an autonomous LLM agent. The example in this lesson uses deterministic mock evidence. A specialist becomes LLM-powered only when you deliberately add a model decision/reasoning step. It can also call approved MCP tools without being an LLM agent.
 
-## 3. Two ways to connect a subgraph
+## 3. Two subgraph communication patterns
 
-The official documentation describes two common patterns.
-
-### Pattern A — Add a compiled subgraph directly as a node
-
-Use this when parent and child graphs share state keys and the child should read/write those shared channels.
+### Pattern A — Add the compiled subgraph directly as a node
 
 ~~~python
 builder.add_node("specialist", compiled_subgraph)
 ~~~
 
-This is concise, but it couples the child to the parent's state contract.
+Use this when the parent and child intentionally share state keys and compatible channel semantics. The child can read and write the shared channels directly.
 
-### Pattern B — Invoke a subgraph inside a wrapper node
+Advantages:
+- concise graph composition;
+- parent can statically discover the nested graph;
+- useful when the child is designed around the parent's state contract.
 
-Use this when the child has a different state schema, needs private state, or requires input/output transformation.
+Trade-off: this couples the child to the parent's state schema. Changes to shared keys can ripple across graph boundaries.
+
+### Pattern B — Invoke the subgraph inside a wrapper node
 
 ~~~python
 def run_specialist(parent_state):
-    child_result = specialist.invoke({
+    child_input = {
         "incident_id": parent_state["incident_id"],
         "services": parent_state["services"],
-    })
+    }
+    child_result = specialist.invoke(child_input)
     return {"findings": [child_result["finding"]]}
 ~~~
 
-This lesson uses Pattern B. Each specialist gets only the input it needs, and the wrapper maps the child result into the parent's shared output.
+Use this when the child has a different/private state schema or when input/output transformation is required.
 
-Reference: [LangGraph Subgraphs — define subgraph communication](https://docs.langchain.com/oss/python/langgraph/use-subgraphs#define-subgraph-communication).
+The wrapper is an explicit adapter:
+1. Select only the parent data the child is allowed to receive.
+2. Invoke the child with its own input contract.
+3. Validate and map the child's output.
+4. Return a small update to the parent state.
 
-## 4. Build a specialist subgraph
+This lesson uses Pattern B. It is a good default for specialist isolation.
 
-Each specialist has its own state contract:
+## 4. Understand the state boundary
 
-- `incident_id`
-- `services`
-- `evidence`
-- `private_notes`
+The example's child state contains:
+- `incident_id` and `services`: child input;
+- `evidence`: intermediate evidence collected by that specialist;
+- `private_notes`: internal progress details;
+- `finding`: the child result.
 
-The parent does not need to know about the child's private notes. It receives only a concise finding.
+The parent state contains:
+- `incident_id` and `services`: overall investigation context;
+- `findings`: specialist outputs;
+- `report`: final synthesis.
 
-This is a useful encapsulation boundary:
-- parent state describes the overall investigation;
-- child state describes one specialist's internal work;
-- wrapper functions define the integration contract.
+The parent does not receive `private_notes`. The wrapper deliberately maps only the finding. This is not just code organization: it reduces accidental coupling and limits how much raw/sensitive evidence flows through the overall graph.
 
-## 5. Parallel specialist execution
+Treat each graph boundary like an API boundary. Validate identifiers, constrain payload sizes, redact sensitive data, and version the output contract.
 
-The parent graph starts all three specialist wrapper nodes in the same super-step. Each returns a partial update to the parent's `findings` channel.
+## 5. Parallel specialists and reducers
 
-The findings channel uses a reducer so concurrent writes are combined rather than overwriting one another.
+In `examples/langgraph_subgraphs/main.py`, the parent graph starts three specialist wrapper nodes from START:
 
-Do not assume parallel completion order is stable. Sort findings before producing a deterministic report.
+~~~python
+builder.add_edge(START, "logs_agent")
+builder.add_edge(START, "metrics_agent")
+builder.add_edge(START, "infra_agent")
+builder.add_edge(
+    ["logs_agent", "metrics_agent", "infra_agent"],
+    "synthesize",
+)
+~~~
 
-## 6. Persistence and memory
+The list of source nodes creates a join: synthesis waits until all three branches finish.
 
-Subgraph persistence is a separate design decision. LangGraph supports per-invocation, per-thread, and stateless subgraph checkpointing modes. For most independent incident investigations, per-invocation state is a sensible starting point. Use per-thread persistence only when a specialist intentionally needs memory across multiple calls in the same thread.
+Each branch writes to the same `findings` state key. That key therefore needs a reducer:
 
-If you enable checkpointing, compile the parent with a checkpointer and pass a `thread_id` when invoking it. Do not persist sensitive logs or credentials without an explicit retention and access policy.
+~~~python
+class ParentState(TypedDict, total=False):
+    findings: Annotated[list[dict[str, str]], operator.add]
+~~~
 
-See the official [subgraph persistence guide](https://docs.langchain.com/oss/python/langgraph/use-subgraphs#subgraph-persistence).
+The reducer combines concurrent list updates. Without an appropriate reducer, parallel writes to a single-value channel can cause an invalid concurrent update.
 
-## 7. Run the example
+Do not rely on parallel completion order. The synthesis node sorts findings by specialist name so the final report is deterministic.
+
+## 6. Run the example
 
 From the repository root:
 
 ~~~bash
-python -m venv .venv
+python3.12 -m venv .venv
 source .venv/bin/activate
 python -m pip install -r examples/langgraph_subgraphs/requirements.txt
 python examples/langgraph_subgraphs/main.py
 python -m unittest discover -s examples/langgraph_subgraphs -p "test_*.py" -v
 ~~~
 
-No LLM, API key, MCP server, or cloud account is required. All findings are deterministic mock data.
+Expected report shape (exact ordering is sorted by specialist):
 
-## 8. Production design guidance
+~~~text
+Incident INC-270 — specialist summary
+- Infrastructure: Infrastructure specialist: ...
+- Logs: Logs specialist: ...
+- Metrics: Metrics specialist: ...
+~~~
 
-Before turning these specialist workflows into real agents:
+No LLM, API key, MCP server, cloud account, or live infrastructure is required. All evidence is deterministic mock data.
 
-1. Give each specialist a narrow responsibility and explicit input/output schema.
-2. Authorize requested services and tenants before invoking specialists.
-3. Give external MCP calls timeouts, bounded retries, and concurrency limits.
-4. Return structured partial failures instead of silently dropping failed specialists.
-5. Keep secrets and raw credentials out of graph state and model prompts.
-6. Add tracing around parent and child graph invocations.
-7. Set a policy for which child state is checkpointed and how long it is retained.
-8. Add a human approval step before consequential remediation.
+## 7. Persistence and memory
 
-A subgraph is an orchestration boundary, not a security sandbox. Child nodes execute in the same application process and inherit the application's trust level.
+Subgraph persistence is a separate decision from graph composition. LangGraph documents three useful modes:
 
-## 9. Exercises
+| Mode | Configuration | Meaning |
+|---|---|---|
+| Per-invocation | Default / inherit parent checkpointer | Each child invocation starts fresh; it can still participate in parent durable execution |
+| Per-thread | Child compiled with `checkpointer=True` | Child state can accumulate across calls on the same thread |
+| Stateless | Child compiled with `checkpointer=False` | No child checkpoint state is saved |
 
+For independent incident investigations, per-invocation state is usually the safest starting point. Per-thread memory is appropriate only when a specialist intentionally needs continuity across calls in the same thread.
+
+If enabling persistence:
+- compile the parent with a production checkpointer;
+- supply a stable, tenant-safe `thread_id`;
+- define retention and deletion policies;
+- prevent one user's or incident's evidence from appearing in another context;
+- test interrupt/resume and failure recovery.
+
+See [Subgraph persistence](https://docs.langchain.com/oss/python/langgraph/use-subgraphs#subgraph-persistence).
+
+## 8. What changes when specialists call MCP tools?
+
+Keep the graph contract stable and replace the mock collector nodes with trusted tool adapters.
+
+| Specialist | Example read-only MCP capabilities |
+|---|---|
+| Logs | Search logs by approved service, time window, and query |
+| Metrics | Query an allow-listed metric over a bounded time range |
+| Infrastructure | Read deployment, pod, node, and event status |
+
+The LLM may help interpret the question or select from approved capabilities, but application code must enforce tenant, environment, service, and time-range authorization. Tool arguments are untrusted input until validated.
+
+Production requirements:
+1. Authenticate and authorize every tool call.
+2. Enforce least privilege and read-only scopes where possible.
+3. Set deadlines, bounded retries, and concurrency limits.
+4. Preserve partial findings if one specialist is unavailable.
+5. Distinguish `unavailable` evidence from a successful query that found no issue.
+6. Record source, timestamp, query parameters, and evidence references.
+7. Redact secrets and personal data before state persistence or model context.
+8. Require explicit approval before consequential remediation.
+
+A subgraph is **not** a security sandbox. Child nodes run in the same application trust boundary unless you deliberately isolate them in separate processes/services with independent credentials and policy enforcement.
+
+## 9. Common mistakes
+
+| Mistake | Why it is a problem | Better approach |
+|---|---|---|
+| One giant shared state | Tight coupling and oversized state | Private specialist schemas and explicit output contracts |
+| No reducer on parallel writes | Concurrent update conflict | Reducer or separate output channels |
+| Return every raw log line | Large and potentially sensitive state | Bounded, redacted evidence summaries and references |
+| Assume every specialist succeeds | Partial failures disappear | Typed success/failure results and partial aggregation |
+| Treat every subgraph as a separate LLM | Unnecessary cost and complexity | Use graph boundaries first; add models where they add value |
+| Persist all child state forever | Cross-incident leakage and stale context | Choose persistence scope deliberately |
+
+## 10. Tests and exercises
+
+Included tests cover:
+- a specialist graph's output;
+- child-private state not leaking into parent output;
+- all three specialist branches being aggregated;
+- empty service lists.
+
+Exercises:
 1. Add a deployment-history specialist.
-2. Make the logs specialist return a structured severity.
-3. Simulate the metrics specialist failing and preserve the other findings.
-4. Add a wrapper validation step that rejects an empty incident ID.
+2. Add a structured `status` field: `ok`, `degraded`, or `unavailable`.
+3. Simulate one specialist failing and preserve the other findings.
+4. Add wrapper validation that rejects an empty incident ID.
 5. Add a checkpointer to the parent and inspect nested state.
-6. Replace one mock specialist with an MCP client call.
+6. Replace one mock specialist with a read-only MCP client call.
 7. Add a human approval node before any remediation action.
 
-## 10. Knowledge check
+## 11. Knowledge check
 
 1. What is a LangGraph subgraph?
 2. When should you add a compiled subgraph directly as a node?
-3. When should you call a subgraph inside a wrapper node?
-4. Why does this example use separate child state?
-5. Why does the parent findings channel need a reducer?
+3. When is a wrapper node a better boundary?
+4. Why does the parent findings channel need a reducer?
+5. Why should raw evidence and private notes not automatically flow into parent state?
 6. Does a subgraph provide a security boundary?
+7. When would per-thread subgraph persistence be justified?
 
-## Official references
+## Key takeaway
 
-- [LangGraph Subgraphs](https://docs.langchain.com/oss/python/langgraph/use-subgraphs)
-- [LangGraph Graph API](https://docs.langchain.com/oss/python/langgraph/graph-api)
-- [LangGraph persistence](https://docs.langchain.com/oss/python/langgraph/persistence)
+A robust multi-agent system is not simply many LLMs talking to one another. It is a collection of bounded, testable workflows with explicit contracts, controlled tool access, deliberate persistence, and a parent orchestrator that coordinates specialists and handles their results.
+
+Next lesson: combine subgraphs with dynamic fan-out so a runtime number of services, regions, or evidence sources can be investigated using the same specialist workflow.
