@@ -83,6 +83,14 @@ curl http://127.0.0.1:8010/v1/approvals/REQUEST_ID/audit \
 
 The workflow uses a random opaque `thread_id`; the public approval ID is a separate UUID. Never expose another tenant's thread ID or allow callers to resume arbitrary threads.
 
+## Unit tests
+
+The graph tests use an in-memory checkpointer and fake executor; they do not require PostgreSQL:
+
+~~~bash
+PYTHONPATH=examples/durable_approval_api python -m pytest -q examples/durable_approval_api/tests
+~~~
+
 ## Process restart experiment
 
 1. Create a proposal and save its `request_id`.
