@@ -31,7 +31,6 @@ A structured, hands-on curriculum for learning modern LangChain from foundations
 | 13 | RAG architecture, retrieval, grounding, and citations |
 | 14 | Advanced RAG: hybrid search, reranking, evaluation |
 | 15 | MCP clients, servers, transports, security, [multiple servers](docs/21-multiple-mcp-servers.md), and [resilience](docs/22-mcp-reliability.md) |
-| 16 | Multi-agent patterns and LangGraph orchestration |
 | 21 | [Multiple MCP servers](docs/21-multiple-mcp-servers.md) |
 | 22 | [MCP reliability](docs/22-mcp-reliability.md) |
 | 23 | [LangGraph production workflows](docs/23-langgraph-production-workflows.md) |
