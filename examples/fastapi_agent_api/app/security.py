@@ -18,6 +18,14 @@ from jwt.exceptions import InvalidTokenError
 from pwdlib import PasswordHash
 
 ALGORITHM = "HS256"
+oauth2_scheme = OAuth2PasswordBearer(
+    tokenUrl="/token",
+    scopes={
+        "investigations:run": "Start an investigation",
+        "investigations:read": "Read investigation results",
+        "users:manage": "Manage user access",
+    },
+)
 ISSUER = "devops-investigation-api"
 AUDIENCE = "devops-investigation-clients"
 ROLE_SCOPES = {
@@ -60,14 +68,6 @@ class SecurityManager:
         self.settings = settings
         self.password_hash = PasswordHash.recommended()
         self._dummy_hash = self.password_hash.hash("not-a-real-user-password")
-        self.oauth2 = OAuth2PasswordBearer(
-            tokenUrl="/token",
-            scopes={
-                "investigations:run": "Start an investigation",
-                "investigations:read": "Read investigation results",
-                "users:manage": "Manage user access",
-            },
-        )
 
     def authenticate(self, username: str, password: str) -> UserRecord | None:
         user = self.settings.users.get(username)
@@ -93,7 +93,7 @@ class SecurityManager:
     async def current_principal(
         self,
         security_scopes: SecurityScopes,
-        token: Annotated[str, Depends(oauth2_scheme_placeholder := OAuth2PasswordBearer(tokenUrl="/token"))],
+        token: Annotated[str, Depends(oauth2_scheme)],
     ) -> Principal:
         """Resolve the current identity and authorize OAuth2 scopes."""
         credentials_error = HTTPException(
