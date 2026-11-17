@@ -85,6 +85,9 @@ def build_approval_workflow(
         )
         return {"execution": result, "status": "completed"}
 
+    def rejected_result(state: ApprovalState):
+        return {"execution": {"executed": False, "reason": "not_approved"}}
+
     def route_after_approval(state: ApprovalState) -> str:
         return "execute" if state.get("status") == "approved" else "finish"
 
@@ -92,7 +95,7 @@ def build_approval_workflow(
     builder.add_node("validate_proposal", validate_proposal)
     builder.add_node("approval_gate", approval_gate)
     builder.add_node("execute", execute_approved_action)
-    builder.add_node("finish", lambda state: {})
+    builder.add_node("finish", rejected_result)
     builder.add_edge(START, "validate_proposal")
     builder.add_edge("validate_proposal", "approval_gate")
     builder.add_conditional_edges(
