@@ -41,16 +41,16 @@ def test_workflow_pauses_before_execution_and_executes_after_approval():
         return {"executed": True, "mode": "test"}
 
     graph = build_approval_workflow(executor)
-    initial = start_approval(graph, proposal())
+    initial = asyncio.run(start_approval(graph, proposal()))
 
     assert initial.get("__interrupt__")
     assert calls == []
 
-    final = resume_approval(
+    final = asyncio.run(resume_approval(
         graph,
         request_id="incident-test-0001",
         decision=approval(),
-    )
+    ))
     assert final["status"] == "completed"
     assert final["execution"]["executed"] is True
     assert len(calls) == 1
@@ -64,12 +64,12 @@ def test_rejection_never_calls_executor():
         return {"executed": True}
 
     graph = build_approval_workflow(executor)
-    start_approval(graph, proposal())
-    final = resume_approval(
+    asyncio.run(start_approval(graph, proposal()))
+    final = asyncio.run(resume_approval(
         graph,
         request_id="incident-test-0001",
         decision=approval(decision="reject"),
-    )
+    ))
 
     assert final["status"] == "rejected"
     assert final["execution"]["executed"] is False
@@ -81,13 +81,13 @@ def test_requester_cannot_approve_own_action():
         raise AssertionError("must not execute")
 
     graph = build_approval_workflow(executor)
-    start_approval(graph, proposal(requested_by="same-person"))
+    asyncio.run(start_approval(graph, proposal(requested_by="same-person")))
     with pytest.raises(PermissionError):
-        resume_approval(
+        asyncio.run(resume_approval(
             graph,
             request_id="incident-test-0001",
             decision=approval(approver_id="same-person"),
-        )
+        ))
 
 
 def test_production_requires_incident_commander():
@@ -95,13 +95,13 @@ def test_production_requires_incident_commander():
         raise AssertionError("must not execute")
 
     graph = build_approval_workflow(executor)
-    start_approval(graph, proposal(environment="production"))
+    asyncio.run(start_approval(graph, proposal(environment="production")))
     with pytest.raises(PermissionError):
-        resume_approval(
+        asyncio.run(resume_approval(
             graph,
             request_id="incident-test-0001",
             decision=approval(approver_role="platform_admin"),
-        )
+        ))
 
 
 def test_operator_role_cannot_approve():
@@ -109,13 +109,13 @@ def test_operator_role_cannot_approve():
         raise AssertionError("must not execute")
 
     graph = build_approval_workflow(executor)
-    start_approval(graph, proposal())
+    asyncio.run(start_approval(graph, proposal()))
     with pytest.raises(PermissionError):
-        resume_approval(
+        asyncio.run(resume_approval(
             graph,
             request_id="incident-test-0001",
             decision=approval(approver_role="operator"),
-        )
+        ))
 
 
 def test_mock_executor_is_idempotent(tmp_path):
