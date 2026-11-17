@@ -25,6 +25,9 @@ Build, test, secure, evaluate, deploy, and operate production LangChain applicat
 19. Production security, reliability, cost, deployment
 20. Capstone and mastery assessment
 
+## Current hands-on extensions: MCP and LangGraph
+- [Lesson 23 — LangGraph Production Workflows](23-langgraph-production-workflows.md): state, nodes, parallel branches, reducers, joins, checkpointing, human approval, testing, and production boundaries. Runnable example: `examples/langgraph_workflows/`.
+
 ## Current hands-on extensions: MCP integration
 - [Lesson 21 — Multiple MCP Servers](21-multiple-mcp-servers.md): connects separate logs and infrastructure servers to one LangChain agent. Runnable example: `examples/multi_mcp_servers/`.
 - [Lesson 22 — MCP Reliability](22-mcp-reliability.md): covers timeouts, bounded retries, jitter, concurrency limits, circuit breakers, bulkheads, and partial results. Runnable helper and unit tests: `examples/mcp_resilience/`.
