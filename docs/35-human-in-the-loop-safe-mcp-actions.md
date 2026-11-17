@@ -115,6 +115,37 @@ Important details:
 
 The demo uses `InMemorySaver` for simplicity. It loses checkpoints when the process exits. Use a durable production checkpointer, such as LangGraph's PostgreSQL checkpointer, and persist approval records independently.
 
+## 4A. Built-in LangChain HumanInTheLoopMiddleware
+
+When you are building a `create_agent` tool-calling agent and simply need selected tools paused for review, LangChain also provides `HumanInTheLoopMiddleware`:
+
+~~~python
+from langchain.agents import create_agent
+from langchain.agents.middleware import HumanInTheLoopMiddleware
+from langgraph.checkpoint.memory import InMemorySaver
+
+agent = create_agent(
+    model,
+    tools=[read_logs, restart_service, rollback_deployment],
+    middleware=[
+        HumanInTheLoopMiddleware(
+            interrupt_on={
+                "read_logs": False,
+                "restart_service": {
+                    "allowed_decisions": ["approve", "reject"]
+                },
+                "rollback_deployment": {
+                    "allowed_decisions": ["approve", "reject"]
+                },
+            }
+        )
+    ],
+    checkpointer=InMemorySaver(),
+)
+~~~
+
+This built-in middleware is convenient when approval is attached directly to agent tool calls. The explicit graph in this lesson is intentional: it gives us a separate proposal schema, custom reviewer policy, environment-specific separation of duties, audit points, and a distinct execution node. Both approaches still require a checkpointer and trusted authorization around the resume operation. See the [LangChain human-in-the-loop guide](https://docs.langchain.com/oss/python/langchain/human-in-the-loop).
+
 ## 5. Proposal schema
 
 The example validates proposals with Pydantic:
