@@ -56,9 +56,33 @@ async def main() -> None:
     executors = {}
 
     for server_name, specialist_name in mapping.items():
-        tools = await client.get_tools(server_name=server_name)
+        try:
+            tools = await client.get_tools(server_name=server_name)
+        except Exception as exc:
+            # Discovery failure is isolated to this dependency. Keep the other
+            # specialists available and make the missing evidence explicit.
+            async def unavailable(_incident: str, _service: str, _task: str,
+                                  *, _error=type(exc).__name__):
+                raise RuntimeError(f"MCP tool discovery failed ({_error})")
+
+            specialists[specialist_name] = unavailable
+            executors[specialist_name] = ResilientExecutor(
+                name=server_name,
+                max_attempts=1,
+            )
+            continue
+
         if not tools:
-            raise RuntimeError(f"No tools discovered for MCP server: {server_name}")
+            async def unavailable(_incident: str, _service: str, _task: str):
+                raise RuntimeError("MCP server returned an empty tool catalog")
+
+            specialists[specialist_name] = unavailable
+            executors[specialist_name] = ResilientExecutor(
+                name=server_name,
+                max_attempts=1,
+            )
+            continue
+
         prefix = f"{server_name}_"
         if any(not tool.name.startswith(prefix) for tool in tools):
             raise RuntimeError(f"Unexpected tool scope for {server_name}")
