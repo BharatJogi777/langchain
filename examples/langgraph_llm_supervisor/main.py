@@ -35,6 +35,7 @@ class RouteDecision(BaseModel):
 
 class InvestigationState(TypedDict, total=False):
     incident: str
+    current_task: str
     findings: Annotated[list[str], operator.add]
     visited_agents: list[str]
     remaining_budget: int
@@ -88,7 +89,8 @@ def _specialist_node(name: str):
             "metrics_agent": "Mock metrics review: inspect latency, saturation, and resource trends.",
             "infrastructure_agent": "Mock infrastructure review: inspect recent deploy and dependency health.",
         }[name]
-        return {"findings": [f"{name}: {evidence} Incident context: {incident[:160]}"]}
+        task = state.get("current_task", "Collect relevant evidence")
+        return {"findings": [f"{name}: {evidence} Task: {task}. Incident context: {incident[:160]}"]}
 
     return run
 
@@ -144,6 +146,7 @@ Return a concise task for the selected specialist.
                     update={
                         **update,
                         "visited_agents": [*visited, destination],
+                        "current_task": task,
                         "remaining_budget": state.get("remaining_budget", 0) - 1,
                     },
                     goto=destination,
@@ -167,7 +170,7 @@ Return a concise task for the selected specialist.
             f"Incident: {state.get('incident', '')}",
             "",
             "Findings:",
-            *(f"- {item}" for item in findings) if findings else ["- No specialist findings collected."],
+            *([f"- {item}" for item in findings] if findings else ["- No specialist findings collected."]),
         ]
         if state.get("fallback_reason"):
             lines.extend(["", f"Supervisor fallback: {state['fallback_reason']}"])
