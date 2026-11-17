@@ -16,21 +16,7 @@ A structured, hands-on curriculum for learning modern LangChain from foundations
 | Module | Subject |
 |---|---|
 | 00 | Roadmap, prerequisites, and learning method |
-| 01 | Environment, packages, versions, and local Ollama |
-| 02 | LLM fundamentals and LangChain architecture |
-| 03 | Models, messages, invocation, streaming, and batching |
-| 04 | Prompt templates, chat prompts, and prompt management |
-| 05 | Output parsing, structured output, and validation |
-| 06 | Runnables, LCEL, composition, branching, and async |
-| 07 | Tools, schemas, tool calling, and error handling |
-| 08 | Agents, agent loops, middleware, and human approval |
-| 09 | State, checkpointers, stores, and memory engineering |
-| 10 | Document loading, metadata, and ingestion |
-| 11 | Text splitting and chunking strategies |
-| 12 | Embeddings, vector search, and vector databases |
-| 13 | RAG architecture, retrieval, grounding, and citations |
-| 14 | Advanced RAG: hybrid search, reranking, evaluation |
-| 15 | MCP clients, servers, transports, security, [multiple servers](docs/21-multiple-mcp-servers.md), and [resilience](docs/22-mcp-reliability.md) |
+| 01–20 | LangChain foundations, RAG, agents, FastAPI, testing, production and capstone |
 | 21 | [Multiple MCP servers](docs/21-multiple-mcp-servers.md) |
 | 22 | [MCP reliability](docs/22-mcp-reliability.md) |
 | 23 | [LangGraph production workflows](docs/23-langgraph-production-workflows.md) |
@@ -47,28 +33,24 @@ A structured, hands-on curriculum for learning modern LangChain from foundations
 | 34 | [Production API security and authentication for AI agents](docs/34-production-agent-api-security.md) |
 | 35 | [Human-in-the-loop approval and safe write-capable MCP tools](docs/35-human-in-the-loop-safe-mcp-actions.md) |
 | 36 | [Persistent LangGraph checkpointing with PostgreSQL and durable approval APIs](docs/36-postgres-checkpointing-durable-approval-api.md) |
-| 16 | Multi-agent patterns and LangGraph orchestration |
-| 17 | FastAPI integration and application architecture |
-| 18 | Testing, evaluation, observability, and tracing |
-| 19 | Production security, reliability, cost, and deployment |
-| 20 | Capstone, interview questions, and mastery checklist |
+| 37 | [Transactional outbox and durable background workers](docs/37-transactional-outbox-durable-agent-workers.md) |
 
 ## Repository structure
 
 - `docs/`: sequential lessons and reference material.
-- `examples/`: small runnable examples, including [multiple MCP servers](examples/multi_mcp_servers/), [MCP resilience](examples/mcp_resilience/), and [LangGraph workflows](examples/langgraph_workflows/), and [LangGraph state/checkpointing](examples/langgraph_state/), and [LangGraph routing/loops](examples/langgraph_routing/), and [LangGraph Send/map-reduce](examples/langgraph_send/), and [LangGraph subgraphs](examples/langgraph_subgraphs/), and [LangGraph supervisor and handoffs](examples/langgraph_supervisor/), and [LLM-powered supervisor routing](examples/langgraph_llm_supervisor/), and [MCP-backed specialist agents](examples/langgraph_mcp_specialists/), and [advanced MCP resilience](examples/mcp_resilience_advanced/), and [MCP observability](examples/mcp_observability/), and [FastAPI agent API](examples/fastapi_agent_api/) with [JWT/RBAC security](docs/34-production-agent-api-security.md), and [human approval for write-capable MCP tools](examples/human_approval_mcp/), and [durable PostgreSQL approval APIs](examples/durable_approval_api/).
+- `examples/`: runnable examples, including [multiple MCP servers](examples/multi_mcp_servers/), [MCP resilience](examples/mcp_resilience/), [LangGraph workflows](examples/langgraph_workflows/), [FastAPI agent API](examples/fastapi_agent_api/), [human approval](examples/human_approval_mcp/), [durable PostgreSQL approvals](examples/durable_approval_api/), and [transactional outbox lab](examples/transactional_outbox/).
 - `projects/`: end-to-end capstone and architecture.
 - `checklists/`: review gates for production readiness.
 
 ## Core principles
 
-- Use the current documented APIs for the versions pinned in each example; LangChain APIs evolve.
+- Use current documented APIs for the versions pinned in each example; LangChain APIs evolve.
 - Prefer explicit model objects such as `ChatOllama(...)` over ambiguous provider inference.
 - Treat model output and tool arguments as untrusted input. Validate at every boundary.
 - A tool call is a request from the model; trusted application code performs the action.
 - Memory is not a magical property of an LLM. Persist and scope state deliberately.
-- RAG quality depends on ingestion, retrieval, context construction, and evaluation—not merely adding a vector database.
-- Use least privilege, timeouts, retries with limits, idempotency, audit logs, and human approval for consequential actions.
+- RAG quality depends on ingestion, retrieval, context construction, and evaluation.
+- Use least privilege, timeouts, bounded retries, idempotency, audit logs, and human approval for consequential actions.
 - Never commit API keys, passwords, production logs, personal data, or real infrastructure credentials.
 
 ## Suggested pace
@@ -77,7 +59,7 @@ A focused learner can work through the material in 6–10 weeks at 1–2 hours p
 
 ## Version policy
 
-LangChain, LangGraph, provider integrations, and MCP packages change. Start with the setup guide, use a virtual environment, pin tested dependencies, and consult the linked official documentation when an API differs. Do not mix snippets from different major versions without checking compatibility.
+LangChain, LangGraph, provider integrations, and MCP packages change. Start with the setup guide, use a virtual environment, pin tested dependencies, and consult official documentation when an API differs. Do not mix snippets from different major versions without checking compatibility.
 
 ## Official references
 
