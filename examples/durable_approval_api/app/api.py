@@ -159,13 +159,12 @@ async def decide(
         raise HTTPException(status_code=410, detail="Approval has expired")
     if outcome == "already_decided":
         raise HTTPException(status_code=409, detail="Approval already decided")
+    if outcome == "production_role_required":
+        raise HTTPException(status_code=403, detail="Production requires incident commander")
     if row is None:
         raise HTTPException(status_code=409, detail="Approval is not pending")
 
-    # Role/environment policy comes from server-side identity and stored proposal.
-    if row["environment"] == "production" and principal.role != "incident_commander":
-        raise HTTPException(status_code=403, detail="Production requires incident commander")
-
+    # Environment policy was checked in the same transaction that recorded the decision.
     stored = await request.app.state.repository.get(request_id)
     decision = {
         "decision": body.decision,
