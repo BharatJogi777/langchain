@@ -25,6 +25,9 @@ Build, test, secure, evaluate, deploy, and operate production LangChain applicat
 19. Production security, reliability, cost, deployment
 20. Capstone and mastery assessment
 
+## Current hands-on extension: multiple MCP servers
+After learning the one-server MCP integration, complete [Lesson 21 — Multiple MCP Servers](21-multiple-mcp-servers.md). It connects separate logs and infrastructure servers to one LangChain agent and includes a runnable example in `examples/multi_mcp_servers/`.
+
 ## Prerequisites
 Python functions, classes, typing, exceptions, virtual environments, modules, async/await; HTTP/JSON; SQL; basic Docker. The course explains embeddings and RAG from first principles.
 
