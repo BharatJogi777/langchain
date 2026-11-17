@@ -18,15 +18,16 @@ Build, test, secure, evaluate, deploy, and operate production LangChain applicat
 12. Embeddings and vector search
 13. RAG architecture, grounding, citations
 14. Advanced RAG and evaluation
-15. MCP clients, servers, transports, security
+15. MCP clients, servers, transports, security, multi-server composition, resilience
 16. LangGraph and multi-agent orchestration
 17. FastAPI application architecture
 18. Testing, evaluation, observability
 19. Production security, reliability, cost, deployment
 20. Capstone and mastery assessment
 
-## Current hands-on extension: multiple MCP servers
-After learning the one-server MCP integration, complete [Lesson 21 — Multiple MCP Servers](21-multiple-mcp-servers.md). It connects separate logs and infrastructure servers to one LangChain agent and includes a runnable example in `examples/multi_mcp_servers/`.
+## Current hands-on extensions: MCP integration
+- [Lesson 21 — Multiple MCP Servers](21-multiple-mcp-servers.md): connects separate logs and infrastructure servers to one LangChain agent. Runnable example: `examples/multi_mcp_servers/`.
+- [Lesson 22 — MCP Reliability](22-mcp-reliability.md): covers timeouts, bounded retries, jitter, concurrency limits, circuit breakers, bulkheads, and partial results. Runnable helper and unit tests: `examples/mcp_resilience/`.
 
 ## Prerequisites
 Python functions, classes, typing, exceptions, virtual environments, modules, async/await; HTTP/JSON; SQL; basic Docker. The course explains embeddings and RAG from first principles.
