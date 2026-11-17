@@ -1,4 +1,4 @@
-"""FastAPI application factory with request correlation and HTTP metrics."""
+"""FastAPI application factory with JWT auth, RBAC, and request telemetry."""
 from __future__ import annotations
 
 import logging
@@ -7,11 +7,14 @@ import time
 from contextlib import asynccontextmanager
 from typing import Any, Awaitable, Callable
 
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import Depends, FastAPI, HTTPException, Request, status
 from fastapi.responses import JSONResponse
+from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import BaseModel, ConfigDict, Field
 
 from app.observability import correlation_scope, new_correlation_id
+from app.rate_limit import SlidingWindowRateLimiter
+from app.security import Principal, SecurityManager
 
 logger = logging.getLogger("devops_agent")
 _CORRELATION_PATTERN = re.compile(r"^[A-Za-z0-9._-]{1,64}$")
@@ -45,6 +48,8 @@ RuntimeFactory = Callable[[], Awaitable[tuple[Investigator, Callable[[], Awaitab
 def create_app(
     *,
     runtime_factory: RuntimeFactory,
+    security: SecurityManager,
+    rate_limiter: SlidingWindowRateLimiter,
     meter=None,
     tracer_provider=None,
     meter_provider=None,
@@ -69,7 +74,7 @@ def create_app(
 
     app = FastAPI(
         title="DevOps Investigation Agent API",
-        version="1.0.0",
+        version="1.1.0",
         lifespan=lifespan,
     )
 
@@ -141,6 +146,35 @@ def create_app(
             headers={"X-Correlation-ID": correlation_id},
         )
 
+    async def enforce_limit(key: str) -> None:
+        retry_after = await rate_limiter.check(key)
+        if retry_after is not None:
+            raise HTTPException(
+                status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+                detail="Rate limit exceeded",
+                headers={"Retry-After": str(retry_after)},
+            )
+
+    @app.post("/token")
+    async def login(
+        request: Request,
+        form_data: OAuth2PasswordRequestForm = Depends(),
+    ):
+        remote_ip = request.client.host if request.client else "unknown"
+        await enforce_limit(f"login:{remote_ip}")
+        user = security.authenticate(form_data.username, form_data.password)
+        if user is None:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Incorrect username or password",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+        return {
+            "access_token": security.issue_token(user),
+            "token_type": "bearer",
+            "expires_in": security.settings.token_ttl_minutes * 60,
+        }
+
     @app.get("/health/live")
     async def liveness():
         return {"status": "alive"}
@@ -151,6 +185,8 @@ def create_app(
             raise HTTPException(status_code=503, detail="Runtime is not ready")
         return {"status": "ready"}
 
+    run_investigation = security.require("investigations:run")
+
     @app.post(
         "/v1/investigations",
         response_model=InvestigationResponse,
@@ -158,9 +194,12 @@ def create_app(
     async def create_investigation(
         payload: InvestigationRequest,
         request: Request,
+        principal: Principal = Depends(run_investigation),
     ):
         if not getattr(request.app.state, "runtime_ready", False):
             raise HTTPException(status_code=503, detail="Runtime is not ready")
+        security.authorize_service(principal, payload.service)
+        await enforce_limit(f"investigation:{principal.subject}")
         result = await request.app.state.investigator(
             incident=payload.incident,
             service=payload.service,
