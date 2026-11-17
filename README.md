@@ -45,6 +45,7 @@ A structured, hands-on curriculum for learning modern LangChain from foundations
 | 32 | [MCP observability and distributed tracing](docs/32-mcp-observability-distributed-tracing.md) |
 | 33 | [FastAPI integration for the LangChain agent API](docs/33-fastapi-langchain-agent-api.md) |
 | 34 | [Production API security and authentication for AI agents](docs/34-production-agent-api-security.md) |
+| 35 | [Human-in-the-loop approval and safe write-capable MCP tools](docs/35-human-in-the-loop-safe-mcp-actions.md) |
 | 16 | Multi-agent patterns and LangGraph orchestration |
 | 17 | FastAPI integration and application architecture |
 | 18 | Testing, evaluation, observability, and tracing |
@@ -54,7 +55,7 @@ A structured, hands-on curriculum for learning modern LangChain from foundations
 ## Repository structure
 
 - `docs/`: sequential lessons and reference material.
-- `examples/`: small runnable examples, including [multiple MCP servers](examples/multi_mcp_servers/), [MCP resilience](examples/mcp_resilience/), and [LangGraph workflows](examples/langgraph_workflows/), and [LangGraph state/checkpointing](examples/langgraph_state/), and [LangGraph routing/loops](examples/langgraph_routing/), and [LangGraph Send/map-reduce](examples/langgraph_send/), and [LangGraph subgraphs](examples/langgraph_subgraphs/), and [LangGraph supervisor and handoffs](examples/langgraph_supervisor/), and [LLM-powered supervisor routing](examples/langgraph_llm_supervisor/), and [MCP-backed specialist agents](examples/langgraph_mcp_specialists/), and [advanced MCP resilience](examples/mcp_resilience_advanced/), and [MCP observability](examples/mcp_observability/), and [FastAPI agent API](examples/fastapi_agent_api/) with [JWT/RBAC security](docs/34-production-agent-api-security.md).
+- `examples/`: small runnable examples, including [multiple MCP servers](examples/multi_mcp_servers/), [MCP resilience](examples/mcp_resilience/), and [LangGraph workflows](examples/langgraph_workflows/), and [LangGraph state/checkpointing](examples/langgraph_state/), and [LangGraph routing/loops](examples/langgraph_routing/), and [LangGraph Send/map-reduce](examples/langgraph_send/), and [LangGraph subgraphs](examples/langgraph_subgraphs/), and [LangGraph supervisor and handoffs](examples/langgraph_supervisor/), and [LLM-powered supervisor routing](examples/langgraph_llm_supervisor/), and [MCP-backed specialist agents](examples/langgraph_mcp_specialists/), and [advanced MCP resilience](examples/mcp_resilience_advanced/), and [MCP observability](examples/mcp_observability/), and [FastAPI agent API](examples/fastapi_agent_api/) with [JWT/RBAC security](docs/34-production-agent-api-security.md), and [human approval for write-capable MCP tools](examples/human_approval_mcp/).
 - `projects/`: end-to-end capstone and architecture.
 - `checklists/`: review gates for production readiness.
 
