@@ -30,7 +30,7 @@ A structured, hands-on curriculum for learning modern LangChain from foundations
 | 12 | Embeddings, vector search, and vector databases |
 | 13 | RAG architecture, retrieval, grounding, and citations |
 | 14 | Advanced RAG: hybrid search, reranking, evaluation |
-| 15 | MCP clients, servers, transports, security, and [multiple MCP servers](docs/21-multiple-mcp-servers.md) |
+| 15 | MCP clients, servers, transports, security, [multiple servers](docs/21-multiple-mcp-servers.md), and [resilience](docs/22-mcp-reliability.md) |
 | 16 | Multi-agent patterns and LangGraph orchestration |
 | 17 | FastAPI integration and application architecture |
 | 18 | Testing, evaluation, observability, and tracing |
@@ -40,7 +40,7 @@ A structured, hands-on curriculum for learning modern LangChain from foundations
 ## Repository structure
 
 - `docs/`: sequential lessons and reference material.
-- `examples/`: small runnable examples, including [multiple MCP servers](examples/multi_mcp_servers/).
+- `examples/`: small runnable examples, including [multiple MCP servers](examples/multi_mcp_servers/) and [MCP resilience](examples/mcp_resilience/).
 - `projects/`: end-to-end capstone and architecture.
 - `checklists/`: review gates for production readiness.
 
