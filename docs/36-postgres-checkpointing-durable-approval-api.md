@@ -276,7 +276,15 @@ Production guidance:
 - Back up and test restore of both checkpoint and business tables.
 - Monitor pool exhaustion, checkpoint latency, DB storage, and stale pending approvals.
 
-## 14. Tests and exercises
+## 14. Run the unit tests
+
+~~~bash
+PYTHONPATH=examples/durable_approval_api python -m pytest -q examples/durable_approval_api/tests
+~~~
+
+These tests use an in-memory checkpointer and a fake executor to verify the pause/resume path and rejection behavior. They do not replace the PostgreSQL process-restart experiment above. The full API integration should additionally be tested against a disposable PostgreSQL instance.
+
+## 15. Tests and exercises
 
 The code is a runnable learning skeleton. Add tests before adapting it to production:
 
@@ -293,7 +301,7 @@ The code is a runnable learning skeleton. Add tests before adapting it to produc
 
 The local executor is simulation-only. No real infrastructure is changed.
 
-## 15. Knowledge check
+## 16. Knowledge check
 
 1. What is the difference between a LangGraph checkpoint and an approval request row?
 2. Why should a thread ID not be treated as an authorization credential?
