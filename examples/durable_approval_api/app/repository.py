@@ -64,7 +64,8 @@ class ApprovalRepository:
         expires_in_minutes: int,
     ) -> None:
         async with self.pool.connection() as conn:
-            await conn.execute(
+            async with conn.transaction():
+                await conn.execute(
                 """
                 INSERT INTO approval_requests
                 (request_id, thread_id, requester_id, action, service,
@@ -78,15 +79,14 @@ class ApprovalRepository:
                     proposal["change_reference"], expires_in_minutes,
                 ),
             )
-            await conn.execute(
-                """
-                INSERT INTO approval_audit_events
-                (request_id, actor_id, event_type, event_data)
-                VALUES (%s, %s, 'proposal_created', %s::jsonb)
-                """,
-                (request_id, requester_id, json.dumps(proposal)),
-            )
-            await conn.commit()
+                await conn.execute(
+                    """
+                    INSERT INTO approval_audit_events
+                    (request_id, actor_id, event_type, event_data)
+                    VALUES (%s, %s, 'proposal_created', %s::jsonb)
+                    """,
+                    (request_id, requester_id, json.dumps(proposal)),
+                )
 
     async def get(self, request_id: UUID):
         async with self.pool.connection() as conn:
