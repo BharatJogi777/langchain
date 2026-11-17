@@ -12,7 +12,7 @@ A structured, hands-on curriculum for learning modern LangChain from foundations
 ## Course map
 
 Lessons 01–20 cover LangChain foundations, RAG, agents, FastAPI, testing, production design, and the initial capstone.
-Lessons 21–37 extend the course through MCP, LangGraph, specialist agents, resilience, observability, API security, human approval, PostgreSQL checkpointing, and the transactional outbox.
+Lessons 21–39 extend the course through MCP, LangGraph, specialist agents, resilience, observability, API security, human approval, PostgreSQL checkpointing, and the transactional outbox.
 
 | Lesson | Subject |
 |---|---|
@@ -25,7 +25,7 @@ Lessons 21–37 extend the course through MCP, LangGraph, specialist agents, res
 | 36 | [PostgreSQL checkpointing and durable approvals](docs/36-postgres-checkpointing-durable-approval-api.md) |
 | 37 | [Transactional outbox pattern](docs/37-transactional-outbox-durable-agent-workers.md) |
 | 38 | [Async PostgreSQL outbox worker](docs/38-async-postgres-outbox-worker.md) |
-| 39 | Planned: production deployment, recovery, and end-to-end failure testing |
+| 39 | [Production deployment, recovery, and failure testing](docs/39-production-deployment-recovery-failure-testing.md) |
 | 40 | Planned: integrated DevOps Investigation Agent capstone and mastery assessment |
 
 ## Repository structure
@@ -47,7 +47,7 @@ Lessons 21–37 extend the course through MCP, LangGraph, specialist agents, res
 
 ## Completion plan
 
-The structured course is planned to finish at Lesson 40. Lessons 38–40 complete the worker, production operations, and integrated capstone. Mastery still requires completing the labs, debugging failures, and explaining trade-offs; reading alone cannot guarantee it.
+The structured course is planned to finish at Lesson 40. Lessons 38–40 complete the worker, production operations, and integrated capstone. Lesson 39 also adds a [deployment and recovery checklist](checklists/production-deployment-recovery.md). Mastery still requires completing the labs, debugging failures, and explaining trade-offs; reading alone cannot guarantee it.
 
 ## Official references
 
