@@ -1,18 +1,11 @@
-# Transactional Outbox — Lesson 37
+# Transactional Outbox — Lessons 37 and 38
 
-This lab demonstrates outbox schema design, safe claiming, bounded retry scheduling, and lease recovery. It uses a PostgreSQL schema and deterministic unit-test helpers. It does not connect to production services or execute infrastructure changes.
-
-See ../../docs/37-transactional-outbox-durable-agent-workers.md for the architecture and failure analysis.
+This lab contains the PostgreSQL outbox schema, async repository, standalone worker, LangGraph resume adapter, and unit tests. It uses mock/no-op resumption by default; it does not execute real infrastructure changes.
 
 ## Start PostgreSQL
 
 ~~~bash
 docker compose up -d
-~~~
-
-Apply schema:
-
-~~~bash
 psql "postgresql://outbox:local_dev_only_change_me@localhost:5437/outbox" -f schema.sql
 ~~~
 
@@ -25,4 +18,14 @@ python -m pip install -r requirements.txt
 PYTHONPATH=examples/transactional_outbox python -m pytest -q examples/transactional_outbox/tests
 ~~~
 
-The outbox provides at-least-once delivery, not exactly-once external execution. A real MCP/downstream operation needs a durable idempotency key and reconciliation for ambiguous outcomes.
+## Run the worker
+
+~~~bash
+export DATABASE_URL='postgresql://outbox:local_dev_only_change_me@localhost:5437/outbox'
+export WORKER_ID='local-worker-1'
+python examples/transactional_outbox/run_worker.py
+~~~
+
+The no-op resumer is a safe placeholder. Replace it with LangGraphApprovalResumer(compiled_graph) after wiring the real Lesson 36 graph and PostgreSQL checkpointer. The worker expects an approval row and matching outbox event created by the API's atomic approval transaction.
+
+The worker provides at-least-once delivery. It does not guarantee exactly-once external side effects. Use downstream idempotency keys and reconcile uncertain outcomes before retrying.
