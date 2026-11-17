@@ -39,7 +39,7 @@ Build, test, secure, evaluate, deploy, and operate production LangChain applicat
 - [Lesson 36 — PostgreSQL Checkpointing and Durable Approval APIs](36-postgres-checkpointing-durable-approval-api.md)
 - [Lesson 37 — Transactional Outbox](37-transactional-outbox-durable-agent-workers.md)
 - [Lesson 38 — Async PostgreSQL Outbox Worker](38-async-postgres-outbox-worker.md)
-- Lesson 39 — Production deployment, recovery, and end-to-end failure testing (planned).
+- [Lesson 39 — Production Deployment, Recovery, and Failure Testing](39-production-deployment-recovery-failure-testing.md).
 - Lesson 40 — Integrated DevOps Investigation Agent capstone and mastery assessment (planned).
 
 ## Prerequisites
