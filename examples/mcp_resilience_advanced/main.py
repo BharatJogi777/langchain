@@ -99,6 +99,7 @@ async def main() -> None:
             "Collect read-only logs, metrics, and infrastructure evidence."
         ),
         service="checkout-api",
+        task="Inspect logs, latency metrics, service health, and recent deployments",
         specialists=specialists,
         executors=executors,
     )
