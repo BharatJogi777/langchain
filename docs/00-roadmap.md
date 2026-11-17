@@ -26,6 +26,7 @@ Build, test, secure, evaluate, deploy, and operate production LangChain applicat
 20. Capstone and mastery assessment
 
 ## Current hands-on extensions: MCP and LangGraph
+- [Lesson 25 — Conditional Routing and Loops](25-langgraph-conditional-routing-loops.md): severity-based routing, evidence loops, explicit termination conditions, max-attempt limits, and recursion limits. Runnable example: `examples/langgraph_routing/`.
 - [Lesson 24 — State, Reducers, and Checkpointing](24-langgraph-state-reducers-checkpointing.md): typed state, replacement vs reducers, safe parallel updates, idempotent evidence merging, thread IDs, checkpoint inspection, and persistence boundaries. Runnable example: `examples/langgraph_state/`.
 - [Lesson 23 — LangGraph Production Workflows](23-langgraph-production-workflows.md): state, nodes, parallel branches, reducers, joins, checkpointing, human approval, testing, and production boundaries. Runnable example: `examples/langgraph_workflows/`.
 
