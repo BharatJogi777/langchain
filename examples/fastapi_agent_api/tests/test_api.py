@@ -54,7 +54,7 @@ def test_invalid_correlation_id_is_replaced():
     with TestClient(build_app()) as client:
         response = client.post(
             "/v1/investigations",
-            headers={"X-Correlation-ID": "bad\r\nheader"},
+            headers={"X-Correlation-ID": "bad value!"},
             json={
                 "service": "checkout-api",
                 "incident": "Checkout requests are timing out",
@@ -65,7 +65,7 @@ def test_invalid_correlation_id_is_replaced():
     assert response.status_code == 200
     generated = response.headers["X-Correlation-ID"]
     assert 1 <= len(generated) <= 64
-    assert generated != "bad\r\nheader"
+    assert generated != "bad value!"
 
 
 def test_partial_investigation_is_returned_as_partial_success():
