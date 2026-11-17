@@ -35,6 +35,7 @@ A structured, hands-on curriculum for learning modern LangChain from foundations
 | 22 | [MCP reliability](docs/22-mcp-reliability.md) |
 | 23 | [LangGraph production workflows](docs/23-langgraph-production-workflows.md) |
 | 24 | [LangGraph state, reducers, and checkpointing](docs/24-langgraph-state-reducers-checkpointing.md) |
+| 25 | [LangGraph conditional routing and loops](docs/25-langgraph-conditional-routing-loops.md) |
 | 16 | Multi-agent patterns and LangGraph orchestration |
 | 17 | FastAPI integration and application architecture |
 | 18 | Testing, evaluation, observability, and tracing |
@@ -44,7 +45,7 @@ A structured, hands-on curriculum for learning modern LangChain from foundations
 ## Repository structure
 
 - `docs/`: sequential lessons and reference material.
-- `examples/`: small runnable examples, including [multiple MCP servers](examples/multi_mcp_servers/), [MCP resilience](examples/mcp_resilience/), and [LangGraph workflows](examples/langgraph_workflows/), and [LangGraph state/checkpointing](examples/langgraph_state/).
+- `examples/`: small runnable examples, including [multiple MCP servers](examples/multi_mcp_servers/), [MCP resilience](examples/mcp_resilience/), and [LangGraph workflows](examples/langgraph_workflows/), and [LangGraph state/checkpointing](examples/langgraph_state/), and [LangGraph routing/loops](examples/langgraph_routing/).
 - `projects/`: end-to-end capstone and architecture.
 - `checklists/`: review gates for production readiness.
 
