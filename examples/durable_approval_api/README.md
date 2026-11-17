@@ -105,7 +105,7 @@ The API and checkpointer share a PostgreSQL pool. The example uses `AsyncPostgre
 
 This is a teaching skeleton, not a complete production approval service:
 - Replace demo headers with Lesson 34 authentication, scopes, service authorization, and tenant isolation.
-- Fix the production-role check before recording a decision in the repository. In a production implementation, validate all policy before committing the decision.
+- The example checks the production-role policy in the same transaction that records the decision; extend this policy with tenant, service, change-window, and risk-level authorization before production use.
 - Add a durable outbox/worker for the gap between recording the decision and resuming the graph. A retry/reconciliation worker must find `decision_recorded` rows and safely resume them.
 - Add downstream idempotency keys and reconciliation for ambiguous execution outcomes.
 - Add rate limits, request correlation, structured logs, metrics, tracing, and encrypted backups.
