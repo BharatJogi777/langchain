@@ -32,6 +32,10 @@ A structured, hands-on curriculum for learning modern LangChain from foundations
 | 14 | Advanced RAG: hybrid search, reranking, evaluation |
 | 15 | MCP clients, servers, transports, security, [multiple servers](docs/21-multiple-mcp-servers.md), and [resilience](docs/22-mcp-reliability.md) |
 | 16 | Multi-agent patterns and LangGraph orchestration |
+| 21 | [Multiple MCP servers](docs/21-multiple-mcp-servers.md) |
+| 22 | [MCP reliability](docs/22-mcp-reliability.md) |
+| 23 | [LangGraph production workflows](docs/23-langgraph-production-workflows.md) |
+| 16 | Multi-agent patterns and LangGraph orchestration |
 | 17 | FastAPI integration and application architecture |
 | 18 | Testing, evaluation, observability, and tracing |
 | 19 | Production security, reliability, cost, and deployment |
@@ -40,7 +44,7 @@ A structured, hands-on curriculum for learning modern LangChain from foundations
 ## Repository structure
 
 - `docs/`: sequential lessons and reference material.
-- `examples/`: small runnable examples, including [multiple MCP servers](examples/multi_mcp_servers/) and [MCP resilience](examples/mcp_resilience/).
+- `examples/`: small runnable examples, including [multiple MCP servers](examples/multi_mcp_servers/), [MCP resilience](examples/mcp_resilience/), and [LangGraph workflows](examples/langgraph_workflows/).
 - `projects/`: end-to-end capstone and architecture.
 - `checklists/`: review gates for production readiness.
 
