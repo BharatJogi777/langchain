@@ -25,7 +25,7 @@ Build, test, secure, evaluate, deploy, and operate production LangChain applicat
 19. Production security, reliability, cost, deployment
 20. Capstone and mastery assessment
 
-## Current hands-on extensions: MCP and LangGraph
+## Current hands-on extensions: MCP and LangGraph\n- [Lesson 29 — LLM-Powered Supervisor with Structured Routing](29-llm-powered-supervisor-structured-routing.md): use ChatOllama structured output to propose specialist routes, validate with Pydantic and trusted Python policy, and execute bounded LangGraph handoffs. Runnable example: `examples/langgraph_llm_supervisor/`.
 - [Lesson 27 — Subgraphs and Multi-Agent Architecture](27-langgraph-subgraphs-multi-agent-architecture.md): private specialist state, parent-child graph composition, wrapper nodes, parallel specialist workflows, and reducer-based aggregation. Runnable example: `examples/langgraph_subgraphs/`.
 - [Lesson 26 — Dynamic Fan-out with Send and Map-Reduce](26-langgraph-dynamic-fanout-send-map-reduce.md): runtime worker dispatch, custom worker inputs, reducer aggregation, empty-input handling, fan-out limits, and production safeguards. Runnable example: `examples/langgraph_send/`.
 - [Lesson 25 — Conditional Routing and Loops](25-langgraph-conditional-routing-loops.md): severity-based routing, evidence loops, explicit termination conditions, max-attempt limits, and recursion limits. Runnable example: `examples/langgraph_routing/`.
