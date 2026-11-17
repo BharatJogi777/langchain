@@ -12,11 +12,11 @@ A structured, hands-on curriculum for learning modern LangChain from foundations
 ## Course map
 
 Lessons 01–20 cover LangChain foundations, RAG, agents, FastAPI, testing, production design, and the initial capstone.
-Lessons 21–39 extend the course through MCP, LangGraph, specialist agents, resilience, observability, API security, human approval, PostgreSQL checkpointing, and the transactional outbox.
+Lessons 21–40 extend the course through MCP, LangGraph, specialist agents, resilience, observability, API security, human approval, PostgreSQL checkpointing, the transactional outbox, production operations, and the integrated capstone.
 
 | Lesson | Subject |
 |---|---|
-| 30 | [Multiple MCP specialist agents](docs/30-specialist-agents-multiple-mcp-servers.md) |
+| 30 | [Multiple MCP specialist agents](docs/30-mcp-specialist-agents-multiple-mcp-servers.md) |
 | 31 | [MCP timeouts, retries, circuit breakers](docs/31-mcp-timeouts-retries-circuit-breakers.md) |
 | 32 | [MCP observability and tracing](docs/32-mcp-observability-distributed-tracing.md) |
 | 33 | [FastAPI agent API](docs/33-fastapi-langchain-agent-api.md) |
@@ -26,13 +26,13 @@ Lessons 21–39 extend the course through MCP, LangGraph, specialist agents, res
 | 37 | [Transactional outbox pattern](docs/37-transactional-outbox-durable-agent-workers.md) |
 | 38 | [Async PostgreSQL outbox worker](docs/38-async-postgres-outbox-worker.md) |
 | 39 | [Production deployment, recovery, and failure testing](docs/39-production-deployment-recovery-failure-testing.md) |
-| 40 | Planned: integrated DevOps Investigation Agent capstone and mastery assessment |
+| 40 | [Integrated DevOps Investigation Agent capstone](docs/40-devops-investigation-agent-capstone.md) |
 
 ## Repository structure
 
 - docs/: sequential lessons and reference material.
 - examples/: runnable examples, including FastAPI agent API, human approval, durable approvals, and transactional outbox.
-- projects/: end-to-end capstone.
+- projects/: [DevOps Investigation Agent capstone](projects/devops_investigation_agent/README.md) and architecture decisions.
 - checklists/: production-readiness reviews.
 
 ## Core principles
@@ -47,7 +47,7 @@ Lessons 21–39 extend the course through MCP, LangGraph, specialist agents, res
 
 ## Completion plan
 
-The structured course is planned to finish at Lesson 40. Lessons 38–40 complete the worker, production operations, and integrated capstone. Lesson 39 also adds a [deployment and recovery checklist](checklists/production-deployment-recovery.md). Mastery still requires completing the labs, debugging failures, and explaining trade-offs; reading alone cannot guarantee it.
+The structured 40-lesson course is complete. Lessons 38–40 cover the durable worker, production operations, and integrated capstone plan. Lesson 39 adds a [deployment and recovery checklist](checklists/production-deployment-recovery.md). The capstone components are learning examples and must pass the documented integration gates before being described as one production-ready system. Mastery still requires completing labs, debugging failures, and explaining trade-offs; reading alone cannot guarantee it.
 
 ## Official references
 
