@@ -1,72 +1,59 @@
 # Production-Grade LangChain Mastery
 
-A structured, hands-on curriculum for learning modern LangChain from foundations to production AI applications. The course uses Python, Ollama (for local learning), FastAPI, PostgreSQL/pgvector, and MCP. Provider-specific examples are kept portable.
-
-> **Learning promise:** completing the lessons, labs, assessments, and capstone should give you the skills to design, build, test, operate, and explain production LangChain applications. No document can guarantee mastery by reading alone: mastery comes from implementing, debugging, measuring, and reviewing the projects.
+A structured, hands-on curriculum for learning modern LangChain from foundations to production AI applications. The course uses Python, Ollama (for local learning), FastAPI, PostgreSQL/pgvector, and MCP.
 
 ## Start here
 
-1. Read [the course roadmap](docs/00-roadmap.md).
+1. Read the [course roadmap](docs/00-roadmap.md).
 2. Follow [the setup guide](docs/01-environment-setup.md).
-3. Study each module in order. Do not skip the labs.
-4. Build the capstone described in [the production project guide](projects/devops-investigation-agent/README.md).
+3. Study each lesson and complete its lab.
+4. Build the DevOps Investigation Agent capstone.
 
 ## Course map
 
-| Module | Subject |
+Lessons 01–20 cover LangChain foundations, RAG, agents, FastAPI, testing, production design, and the initial capstone.
+Lessons 21–37 extend the course through MCP, LangGraph, specialist agents, resilience, observability, API security, human approval, PostgreSQL checkpointing, and the transactional outbox.
+
+| Lesson | Subject |
 |---|---|
-| 00 | Roadmap, prerequisites, and learning method |
-| 01–20 | LangChain foundations, RAG, agents, FastAPI, testing, production and capstone |
-| 21 | [Multiple MCP servers](docs/21-multiple-mcp-servers.md) |
-| 22 | [MCP reliability](docs/22-mcp-reliability.md) |
-| 23 | [LangGraph production workflows](docs/23-langgraph-production-workflows.md) |
-| 24 | [LangGraph state, reducers, and checkpointing](docs/24-langgraph-state-reducers-checkpointing.md) |
-| 25 | [LangGraph conditional routing and loops](docs/25-langgraph-conditional-routing-loops.md) |
-| 26 | [LangGraph dynamic fan-out with Send and map-reduce](docs/26-langgraph-dynamic-fanout-send-map-reduce.md) |
-| 27 | [LangGraph subgraphs and multi-agent architecture](docs/27-langgraph-subgraphs-multi-agent-architecture.md) |
-| 28 | [LangGraph supervisor pattern and agent handoffs](docs/28-langgraph-supervisor-agent-handoffs.md) |
-| 29 | [LLM-powered supervisor with structured routing](docs/29-llm-powered-supervisor-structured-routing.md) |
-| 30 | [Specialist agents connected to multiple MCP servers](docs/30-specialist-agents-multiple-mcp-servers.md) |
-| 31 | [MCP timeouts, retries, circuit breakers, and failure recovery](docs/31-mcp-timeouts-retries-circuit-breakers.md) |
-| 32 | [MCP observability and distributed tracing](docs/32-mcp-observability-distributed-tracing.md) |
-| 33 | [FastAPI integration for the LangChain agent API](docs/33-fastapi-langchain-agent-api.md) |
-| 34 | [Production API security and authentication for AI agents](docs/34-production-agent-api-security.md) |
-| 35 | [Human-in-the-loop approval and safe write-capable MCP tools](docs/35-human-in-the-loop-safe-mcp-actions.md) |
-| 36 | [Persistent LangGraph checkpointing with PostgreSQL and durable approval APIs](docs/36-postgres-checkpointing-durable-approval-api.md) |
-| 37 | [Transactional outbox and durable background workers](docs/37-transactional-outbox-durable-agent-workers.md) |
+| 30 | [Multiple MCP specialist agents](docs/30-specialist-agents-multiple-mcp-servers.md) |
+| 31 | [MCP timeouts, retries, circuit breakers](docs/31-mcp-timeouts-retries-circuit-breakers.md) |
+| 32 | [MCP observability and tracing](docs/32-mcp-observability-distributed-tracing.md) |
+| 33 | [FastAPI agent API](docs/33-fastapi-langchain-agent-api.md) |
+| 34 | [Production API security](docs/34-production-agent-api-security.md) |
+| 35 | [Human approval and safe MCP actions](docs/35-human-in-the-loop-safe-mcp-actions.md) |
+| 36 | [PostgreSQL checkpointing and durable approvals](docs/36-postgres-checkpointing-durable-approval-api.md) |
+| 37 | [Transactional outbox pattern](docs/37-transactional-outbox-durable-agent-workers.md) |
+| 38 | [Async PostgreSQL outbox worker](docs/38-async-postgres-outbox-worker.md) |
+| 39 | Planned: production deployment, recovery, and end-to-end failure testing |
+| 40 | Planned: integrated DevOps Investigation Agent capstone and mastery assessment |
 
 ## Repository structure
 
-- `docs/`: sequential lessons and reference material.
-- `examples/`: runnable examples, including [multiple MCP servers](examples/multi_mcp_servers/), [MCP resilience](examples/mcp_resilience/), [LangGraph workflows](examples/langgraph_workflows/), [FastAPI agent API](examples/fastapi_agent_api/), [human approval](examples/human_approval_mcp/), [durable PostgreSQL approvals](examples/durable_approval_api/), and [transactional outbox lab](examples/transactional_outbox/).
-- `projects/`: end-to-end capstone and architecture.
-- `checklists/`: review gates for production readiness.
+- docs/: sequential lessons and reference material.
+- examples/: runnable examples, including FastAPI agent API, human approval, durable approvals, and transactional outbox.
+- projects/: end-to-end capstone.
+- checklists/: production-readiness reviews.
 
 ## Core principles
 
-- Use current documented APIs for the versions pinned in each example; LangChain APIs evolve.
-- Prefer explicit model objects such as `ChatOllama(...)` over ambiguous provider inference.
-- Treat model output and tool arguments as untrusted input. Validate at every boundary.
-- A tool call is a request from the model; trusted application code performs the action.
-- Memory is not a magical property of an LLM. Persist and scope state deliberately.
-- RAG quality depends on ingestion, retrieval, context construction, and evaluation.
+- Use current documented APIs and pinned dependencies; LangChain APIs evolve.
+- Treat model output and tool arguments as untrusted input.
+- A tool call is a request from the model; trusted application code authorizes and executes it.
+- Persist state deliberately; memory is not a magical property of an LLM.
+- Evaluate RAG retrieval, grounding, and answer quality.
 - Use least privilege, timeouts, bounded retries, idempotency, audit logs, and human approval for consequential actions.
-- Never commit API keys, passwords, production logs, personal data, or real infrastructure credentials.
+- Never commit credentials, personal data, or real production logs.
 
-## Suggested pace
+## Completion plan
 
-A focused learner can work through the material in 6–10 weeks at 1–2 hours per day. Move at the pace required to complete labs and explain trade-offs, not by calendar.
-
-## Version policy
-
-LangChain, LangGraph, provider integrations, and MCP packages change. Start with the setup guide, use a virtual environment, pin tested dependencies, and consult official documentation when an API differs. Do not mix snippets from different major versions without checking compatibility.
+The structured course is planned to finish at Lesson 40. Lessons 38–40 complete the worker, production operations, and integrated capstone. Mastery still requires completing the labs, debugging failures, and explaining trade-offs; reading alone cannot guarantee it.
 
 ## Official references
 
-- [LangChain documentation](https://python.langchain.com/docs/)
-- [LangGraph documentation](https://langchain-ai.github.io/langgraph/)
-- [LangChain integrations](https://python.langchain.com/docs/integrations/)
+- [LangChain](https://python.langchain.com/docs/)
+- [LangGraph](https://langchain-ai.github.io/langgraph/)
 - [Model Context Protocol](https://modelcontextprotocol.io/)
-- [Ollama documentation](https://docs.ollama.com/)
-- [FastAPI documentation](https://fastapi.tiangolo.com/)
-- [Pydantic documentation](https://docs.pydantic.dev/)
+- [Ollama](https://docs.ollama.com/)
+- [FastAPI](https://fastapi.tiangolo.com/)
+- [Pydantic](https://docs.pydantic.dev/)
