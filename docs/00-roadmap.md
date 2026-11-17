@@ -40,7 +40,11 @@ Build, test, secure, evaluate, deploy, and operate production LangChain applicat
 - [Lesson 37 — Transactional Outbox](37-transactional-outbox-durable-agent-workers.md)
 - [Lesson 38 — Async PostgreSQL Outbox Worker](38-async-postgres-outbox-worker.md)
 - [Lesson 39 — Production Deployment, Recovery, and Failure Testing](39-production-deployment-recovery-failure-testing.md).
-- Lesson 40 — Integrated DevOps Investigation Agent capstone and mastery assessment (planned).
+- [Lesson 40 — Integrated DevOps Investigation Agent Capstone](40-devops-investigation-agent-capstone.md).
+
+## Course completion
+
+The structured 40-lesson curriculum is complete. The final capstone is an integration plan built from the component examples. Follow its phase gates and do not claim end-to-end production readiness until the full integration, security, recovery, and operational tests pass.
 
 ## Prerequisites
 
